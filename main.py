@@ -35,6 +35,7 @@ class Trainer(Trainer):
 
 
 def main():
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     # model_name = 'IDEA-CCNL/Wenzhong-GPT2-3.5B'
     # model_name = 'liam168/gen-gpt2-medium-chinese'
     model_name = 'mymusise/CPM-Generate-distill'
@@ -58,7 +59,7 @@ def main():
     )
     datasets['test'].set_format(type='torch', columns=['input_ids'])
     
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
     model.resize_token_embeddings(len(tokenizer))
     for p in model.parameters():
         p.requires_grad = True
