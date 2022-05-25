@@ -7,4 +7,4 @@ class args():
     temperature = 0.8
     weight_decay = 0.01
     
-    output_dir = "./results"
+    output_dir = "./model"
