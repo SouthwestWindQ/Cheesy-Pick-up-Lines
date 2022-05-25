@@ -1,5 +1,7 @@
-# Cheesy-Pick-up-Lines
+# 土味情话生成器
 
-Our project of Introduction to AI in Spring of 2022, themed with Generator of Cheesy Pick-up Lines.
+**2022春《人工智能引论》自然语言处理——土味情话生成器**
 
-Here is just our preliminary attempt, and more adjustments will be pushed soon.
+因为Github对上载文件大小的限制，我们没有将我们已经训练好的模型上传至这个repo。如果想要测试模型的效果，先运行'main.py'，待训练完成、'model'目录生成之后，再运行'test.py'即可。
+
+如果想调整超参数，可以在'config.py'中进行调整。
