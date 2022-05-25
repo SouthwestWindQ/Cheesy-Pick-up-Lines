@@ -1,10 +1,8 @@
-import pdb
 import jieba
 import torch
 from config import args
 from dataHelper import get_dataset
 from torch.nn import CrossEntropyLoss
-from transformers import TextGenerationPipeline
 from transformers import XLNetTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
 
 pad_id = 0
@@ -41,6 +39,7 @@ def main():
     model_name = 'mymusise/CPM-Generate-distill'
     tokenizer = XLNetTokenizer.from_pretrained(model_name)
     global pad_id
+    torch.manual_seed(args.seed)
     pad_id = tokenizer.convert_tokens_to_ids(tokenizer.pad_token)
     datasets = get_dataset()
     cls, sep = tokenizer.cls_token, tokenizer.sep_token
@@ -58,12 +57,12 @@ def main():
         ), batched=True,
     )
     datasets['test'].set_format(type='torch', columns=['input_ids'])
-    
+
     model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
     model.resize_token_embeddings(len(tokenizer))
     for p in model.parameters():
         p.requires_grad = True
-    
+    # pdb.set_trace()
     training_args = TrainingArguments(
         learning_rate=args.lr,
         output_dir=args.output_dir,
@@ -81,19 +80,9 @@ def main():
     )
     trainer.train()
     
-    model = model.cpu()
-    text_generater = TextGenerationPipeline(model, tokenizer)
-    keyword = "晚安"
-    print('关键词:', keyword)
-    keyword = tokenizer.cls_token + keyword + tokenizer.sep_token
-    text = text_generater(keyword, max_length=80, top_k=1, use_cache=True, prefix='')[0]['generated_text']
-    text = text[len(keyword):]
-    print('土味情话:', end=' ')
-    for s in text:
-        print(s, end='')
-        if s == tokenizer.sep_token or s == '。':
-            break
-
+    state = {'net': model.state_dict()}
+    torch.save(state, args.output_dir + '/finalmodel.pth')
+    
 
 if __name__ == '__main__':
     main()
