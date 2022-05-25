@@ -22,7 +22,7 @@ tokenizer = XLNetTokenizer.from_pretrained(model_name)
 cls, sep = tokenizer.cls_token, tokenizer.sep_token
 model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
 model.resize_token_embeddings(len(tokenizer))
-checkpoint = torch.load('model/finalmodel.pth', map_location=torch.device(device))
+checkpoint = torch.load(args.output_dir + '/finalmodel.pth', map_location=torch.device(device))
 model.load_state_dict(checkpoint['net'])
 
 for i in range(10):
